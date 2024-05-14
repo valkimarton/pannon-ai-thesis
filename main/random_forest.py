@@ -13,6 +13,8 @@ SIMPLE_SHEAR = 'Simple Shear'
 UNIAX_COMPRESSION = 'Uniax Compression'
 UNIAX_TENSION = 'Uniax Tension'
 
+DATA_POINT = 'data_point'
+
 # function to read inputs for stress type
 def read_inputs(path: str) -> pd.DataFrame:
     data = pd.read_csv(path)
@@ -91,11 +93,12 @@ def evaluate_model(random_forest, X_test, y_test, stress_type):
 
 def classify_biax_tension():
     df_biax_tension = read_inputs('./extracted_features_data/biax_tension_features.csv')
-    df_biax_tension_test = df_biax_tension.iloc[::5, :]
-    df_biax_tension_train = df_biax_tension.drop(df_biax_tension.index[::5])
-    X_train = df_biax_tension_train.drop([feature_extractor.SAMPLE_NAME,feature_extractor.CLASS], axis=1)
+    df_biax_tension[DATA_POINT] = df_biax_tension[feature_extractor.SAMPLE_NAME].str.extract('(\d+)').astype(int)
+    df_biax_tension_test = df_biax_tension[df_biax_tension[DATA_POINT] % 5 == 0]
+    df_biax_tension_train = df_biax_tension[df_biax_tension[DATA_POINT] % 5 != 0]
+    X_train = df_biax_tension_train.drop([feature_extractor.SAMPLE_NAME, feature_extractor.CLASS, DATA_POINT], axis=1)
     y_train = df_biax_tension_train[feature_extractor.CLASS]
-    X_test = df_biax_tension_test.drop([feature_extractor.SAMPLE_NAME,feature_extractor.CLASS], axis=1)
+    X_test = df_biax_tension_test.drop([feature_extractor.SAMPLE_NAME,feature_extractor.CLASS, DATA_POINT], axis=1)
     y_test = df_biax_tension_test[feature_extractor.CLASS]
 
     # find the best max_depth for decision_tree
@@ -112,11 +115,12 @@ def classify_biax_tension():
 
 def classify_planar_compression():
     df_planar_compression = read_inputs('./extracted_features_data/planar_compression_features.csv')
-    df_planar_compression_test = df_planar_compression.iloc[::5, :]
-    df_planar_compression_train = df_planar_compression.drop(df_planar_compression.index[::5])
-    X_train = df_planar_compression_train.drop([feature_extractor.SAMPLE_NAME,feature_extractor.CLASS], axis=1)
+    df_planar_compression[DATA_POINT] = df_planar_compression[feature_extractor.SAMPLE_NAME].str.extract('(\d+)').astype(int)
+    df_planar_compression_test = df_planar_compression[df_planar_compression[DATA_POINT] % 5 == 0]
+    df_planar_compression_train = df_planar_compression[df_planar_compression[DATA_POINT] % 5 != 0]
+    X_train = df_planar_compression_train.drop([feature_extractor.SAMPLE_NAME, feature_extractor.CLASS, DATA_POINT], axis=1)
     y_train = df_planar_compression_train[feature_extractor.CLASS]
-    X_test = df_planar_compression_test.drop([feature_extractor.SAMPLE_NAME,feature_extractor.CLASS], axis=1)
+    X_test = df_planar_compression_test.drop([feature_extractor.SAMPLE_NAME,feature_extractor.CLASS, DATA_POINT], axis=1)
     y_test = df_planar_compression_test[feature_extractor.CLASS]
 
     # find the best max_depth for decision_tree
@@ -124,7 +128,7 @@ def classify_planar_compression():
     best_max_depth = max_depth
 
     # find the best n_estimators for random_forest
-    n_estimators = find_best_n_estimators(X_train, y_train, best_max_depth, range(10, 25, 3), PLANAR_COMPRESSION)
+    n_estimators = find_best_n_estimators(X_train, y_train, best_max_depth, range(15, 30, 3), PLANAR_COMPRESSION)
     best_n_estimators = n_estimators
 
     # train random forest classifier
@@ -133,11 +137,12 @@ def classify_planar_compression():
 
 def classify_planar_tension():
     df_planar_tension = read_inputs('./extracted_features_data/planar_tension_features.csv')
-    df_planar_tension_test = df_planar_tension.iloc[::5, :]
-    df_planar_tension_train = df_planar_tension.drop(df_planar_tension.index[::5])
-    X_train = df_planar_tension_train.drop([feature_extractor.SAMPLE_NAME,feature_extractor.CLASS], axis=1)
+    df_planar_tension[DATA_POINT] = df_planar_tension[feature_extractor.SAMPLE_NAME].str.extract('(\d+)').astype(int)
+    df_planar_tension_test = df_planar_tension[df_planar_tension[DATA_POINT] % 5 == 0]
+    df_planar_tension_train = df_planar_tension[df_planar_tension[DATA_POINT] % 5 != 0]
+    X_train = df_planar_tension_train.drop([feature_extractor.SAMPLE_NAME, feature_extractor.CLASS, DATA_POINT], axis=1)
     y_train = df_planar_tension_train[feature_extractor.CLASS]
-    X_test = df_planar_tension_test.drop([feature_extractor.SAMPLE_NAME,feature_extractor.CLASS], axis=1)
+    X_test = df_planar_tension_test.drop([feature_extractor.SAMPLE_NAME, feature_extractor.CLASS, DATA_POINT], axis=1)
     y_test = df_planar_tension_test[feature_extractor.CLASS]
 
     # find the best max_depth for decision_tree
@@ -154,11 +159,12 @@ def classify_planar_tension():
 
 def classify_simple_shear():
     df_simple_shear = read_inputs('./extracted_features_data/simple_shear_features.csv')
-    df_simple_shear_test = df_simple_shear.iloc[::5, :]
-    df_simple_shear_train = df_simple_shear.drop(df_simple_shear.index[::5])
-    X_train = df_simple_shear_train.drop([feature_extractor.SAMPLE_NAME,feature_extractor.CLASS], axis=1)
+    df_simple_shear[DATA_POINT] = df_simple_shear[feature_extractor.SAMPLE_NAME].str.extract('(\d+)').astype(int)
+    df_simple_shear_test = df_simple_shear[df_simple_shear[DATA_POINT] % 5 == 0]
+    df_simple_shear_train = df_simple_shear[df_simple_shear[DATA_POINT] % 5 != 0]
+    X_train = df_simple_shear_train.drop([feature_extractor.SAMPLE_NAME, feature_extractor.CLASS, DATA_POINT], axis=1)
     y_train = df_simple_shear_train[feature_extractor.CLASS]
-    X_test = df_simple_shear_test.drop([feature_extractor.SAMPLE_NAME,feature_extractor.CLASS], axis=1)
+    X_test = df_simple_shear_test.drop([feature_extractor.SAMPLE_NAME,feature_extractor.CLASS, DATA_POINT], axis=1)
     y_test = df_simple_shear_test[feature_extractor.CLASS]
 
     # find the best max_depth for decision_tree
@@ -175,11 +181,12 @@ def classify_simple_shear():
 
 def classify_uniax_compression():
     df_uniax_compression = read_inputs('./extracted_features_data/uniax_compression_features.csv')
-    df_uniax_compression_test = df_uniax_compression.iloc[::5, :]
-    df_uniax_compression_train = df_uniax_compression.drop(df_uniax_compression.index[::5])
-    X_train = df_uniax_compression_train.drop([feature_extractor.SAMPLE_NAME,feature_extractor.CLASS], axis=1)
+    df_uniax_compression[DATA_POINT] = df_uniax_compression[feature_extractor.SAMPLE_NAME].str.extract('(\d+)').astype(int)
+    df_uniax_compression_test = df_uniax_compression[df_uniax_compression[DATA_POINT] % 5 == 0]
+    df_uniax_compression_train = df_uniax_compression[df_uniax_compression[DATA_POINT] % 5 != 0]
+    X_train = df_uniax_compression_train.drop([feature_extractor.SAMPLE_NAME, feature_extractor.CLASS, DATA_POINT], axis=1)
     y_train = df_uniax_compression_train[feature_extractor.CLASS]
-    X_test = df_uniax_compression_test.drop([feature_extractor.SAMPLE_NAME,feature_extractor.CLASS], axis=1)
+    X_test = df_uniax_compression_test.drop([feature_extractor.SAMPLE_NAME,feature_extractor.CLASS, DATA_POINT], axis=1)
     y_test = df_uniax_compression_test[feature_extractor.CLASS]
 
     # find the best max_depth for decision_tree
@@ -187,7 +194,7 @@ def classify_uniax_compression():
     best_max_depth = max_depth
 
     # find the best n_estimators for random_forest
-    n_estimators = find_best_n_estimators(X_train, y_train, best_max_depth, range(5, 31, 3), UNIAX_COMPRESSION)
+    n_estimators = find_best_n_estimators(X_train, y_train, best_max_depth, range(26, 52, 3), UNIAX_COMPRESSION)
     best_n_estimators = n_estimators
 
     # train random forest classifier
@@ -196,11 +203,12 @@ def classify_uniax_compression():
 
 def classify_uniax_tension():
     df_uniax_tension = read_inputs('./extracted_features_data/uniax_tension_features.csv')
-    df_uniax_tension_test = df_uniax_tension.iloc[::5, :]
-    df_uniax_tension_train = df_uniax_tension.drop(df_uniax_tension.index[::5])
-    X_train = df_uniax_tension_train.drop([feature_extractor.SAMPLE_NAME,feature_extractor.CLASS], axis=1)
+    df_uniax_tension[DATA_POINT] = df_uniax_tension[feature_extractor.SAMPLE_NAME].str.extract('(\d+)').astype(int)
+    df_uniax_tension_test = df_uniax_tension[df_uniax_tension[DATA_POINT] % 5 == 0]
+    df_uniax_tension_train = df_uniax_tension[df_uniax_tension[DATA_POINT] % 5 != 0]
+    X_train = df_uniax_tension_train.drop([feature_extractor.SAMPLE_NAME, feature_extractor.CLASS, DATA_POINT], axis=1)
     y_train = df_uniax_tension_train[feature_extractor.CLASS]
-    X_test = df_uniax_tension_test.drop([feature_extractor.SAMPLE_NAME,feature_extractor.CLASS], axis=1)
+    X_test = df_uniax_tension_test.drop([feature_extractor.SAMPLE_NAME,feature_extractor.CLASS, DATA_POINT], axis=1)
     y_test = df_uniax_tension_test[feature_extractor.CLASS]
 
     # find the best max_depth for decision_tree
@@ -214,6 +222,9 @@ def classify_uniax_tension():
     # train random forest classifier
     random_forest = train_random_forest(X_train, y_train, best_n_estimators, best_max_depth)
     evaluate_model(random_forest, X_test, y_test, UNIAX_TENSION)
+
+def classify_vote():
+    pass
 
 if __name__ == '__main__':
     classify_biax_tension()

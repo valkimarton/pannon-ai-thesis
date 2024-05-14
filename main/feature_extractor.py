@@ -107,6 +107,8 @@ def extract_biax_tension_features_for_model(inputs: dict) -> pd.DataFrame:
         final_strain = value['strain'].iloc[-1]
         final_stress = value['stress'].iloc[-1]
         class_label = get_class(key)
+        if 'mooneyrivlin2' in key:
+            key = key.replace('mooneyrivlin2', 'mooneyrivlin')
         features.loc[key] = [total_curvature, curvature_ratio, final_strain, final_stress, class_label]
         features.index.name = SAMPLE_NAME
     
@@ -119,6 +121,8 @@ def extract_planar_compression_features_for_model(inputs: dict) -> pd.DataFrame:
         total_curvature = curve_props.total_curvature(value)
         final_strain = value['strain'].iloc[-1]
         class_label = get_class(key)
+        if 'mooneyrivlin2' in key:
+            key = key.replace('mooneyrivlin2', 'mooneyrivlin')
         features.loc[key] = [total_curvature, final_strain, class_label]
         features.index.name = SAMPLE_NAME
     
@@ -132,6 +136,8 @@ def extract_planar_tension_features_for_model(inputs: dict) -> pd.DataFrame:
         curvature_ratio = curve_props.get_curvature_ratio(value)
         final_strain = value['strain'].iloc[-1]
         class_label = get_class(key)
+        if 'mooneyrivlin2' in key:
+            key = key.replace('mooneyrivlin2', 'mooneyrivlin')
         features.loc[key] = [total_curvature, curvature_ratio, final_strain, class_label]
         features.index.name = SAMPLE_NAME
     
@@ -145,6 +151,8 @@ def extract_simple_shear_features_for_model(inputs: dict) -> pd.DataFrame:
         curvature_ratio = curve_props.get_curvature_ratio(value)
         final_strain = value['strain'].iloc[-1]
         class_label = get_class(key)
+        if 'mooneyrivlin2' in key:
+            key = key.replace('mooneyrivlin2', 'mooneyrivlin')
         features.loc[key] = [total_curvature, curvature_ratio, final_strain, class_label]
         features.index.name = SAMPLE_NAME
     
@@ -158,6 +166,8 @@ def extract_uniax_compression_features_for_model(inputs: dict) -> pd.DataFrame:
         curvature_ratio = curve_props.get_curvature_ratio(value)
         final_strain = value['strain'].iloc[-1]
         class_label = get_class(key)
+        if 'mooneyrivlin2' in key:
+            key = key.replace('mooneyrivlin2', 'mooneyrivlin')
         features.loc[key] = [total_curvature, curvature_ratio, final_strain, class_label]
         features.index.name = SAMPLE_NAME
     
@@ -173,6 +183,8 @@ def extract_uniax_tension_features_for_model(inputs: dict) -> pd.DataFrame:
         final_strain = value['strain'].iloc[-1]
         final_stress = value['stress'].iloc[-1]
         class_label = get_class(key)
+        if 'mooneyrivlin2' in key:
+            key = key.replace('mooneyrivlin2', 'mooneyrivlin')
         features.loc[key] = [total_curvature, curvature_ratio, final_strain, final_stress, class_label]
         features.index.name = SAMPLE_NAME
     
@@ -181,7 +193,7 @@ def extract_uniax_tension_features_for_model(inputs: dict) -> pd.DataFrame:
 def get_class(key: str) -> str:
     if 'neohookean' in key:
         return 'nh'
-    elif 'mooneyrivlin2' in key:
+    elif 'mooneyrivlin' in key:
         return 'mr'
     elif 'ogden' in key:
         return 'og'
