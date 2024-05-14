@@ -38,12 +38,13 @@ def read_inputs(tension_folder: str, mat_model_folder: str) -> dict:
             data = pd.read_csv(data_folder + '/' + file, sep='  ', header=None, engine='python')
             # remove rows where all values are 0
             data = data[(data.T != 0).any()]
+            # remove if there is a 3rd columsn
+            if len(data.columns) == 3:
+                data = data.drop(data.columns[2], axis=1)
             data.columns = ['stress', 'strain']   #TODO
             data_point_number = file[:-4]
             inputs[data_point_number] = data
     return inputs
-
-
 
 
 

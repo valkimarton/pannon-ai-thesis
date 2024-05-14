@@ -41,10 +41,9 @@ def generate_all_diagrams():
     inputs_uniaxc_mr = data_prep.read_inputs(data_prep.UNIAX_COMPRESSION_FOLDER, data_prep.MOONEY_RIVLIN_FOLDER)
     inputs_uniaxc_og = data_prep.read_inputs(data_prep.UNIAX_COMPRESSION_FOLDER, data_prep.OGDEN_FOLDER)
 
-    # TODO: handle uniax_tension's 3 columns
-    # inputs_uniaxt_nh = data_prep.read_inputs(data_prep.UNIAX_TENSION_FOLDER, data_prep.NEO_HOOKEAN_FOLDER)
-    # inputs_uniaxt_mr = data_prep.read_inputs(data_prep.UNIAX_TENSION_FOLDER, data_prep.MOONEY_RIVLIN_FOLDER)
-    # inputs_uniaxt_og = data_prep.read_inputs(data_prep.UNIAX_TENSION_FOLDER, data_prep.OGDEN_FOLDER)
+    inputs_uniaxt_nh = data_prep.read_inputs(data_prep.UNIAX_TENSION_FOLDER, data_prep.NEO_HOOKEAN_FOLDER)
+    inputs_uniaxt_mr = data_prep.read_inputs(data_prep.UNIAX_TENSION_FOLDER, data_prep.MOONEY_RIVLIN_FOLDER)
+    inputs_uniaxt_og = data_prep.read_inputs(data_prep.UNIAX_TENSION_FOLDER, data_prep.OGDEN_FOLDER)
 
     generate_diagrams(inputs_biax_nh, 'diagrams/biax_tension/neohoohean/')
     generate_diagrams(inputs_biax_mr, 'diagrams/biax_tension/mooneyrivlin2/')
@@ -61,7 +60,9 @@ def generate_all_diagrams():
     generate_diagrams(inputs_uniaxc_nh, 'diagrams/uniax_compression/neohoohean/')
     generate_diagrams(inputs_uniaxc_mr, 'diagrams/uniax_compression/mooneyrivlin2/')
     generate_diagrams(inputs_uniaxc_og, 'diagrams/uniax_compression/ogden/')
-    # generate_diagrams(inputs_uniaxt_nh, 'diagrams/uniax_tension/neohoohean/')
-    # generate_diagrams(inputs_uniaxt_mr, 'diagrams/uniax_tension/mooneyrivlin2/')
-    # generate_diagrams(inputs_uniaxt_og, 'diagrams/uniax_tension/ogden/')
+    generate_diagrams(inputs_uniaxt_nh, 'diagrams/uniax_tension/neohoohean/')
+    generate_diagrams(inputs_uniaxt_mr, 'diagrams/uniax_tension/mooneyrivlin2/')
+    generate_diagrams(inputs_uniaxt_og, 'diagrams/uniax_tension/ogden/')
+
+# generate_all_diagrams()
     
