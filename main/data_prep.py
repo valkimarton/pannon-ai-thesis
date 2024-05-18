@@ -30,7 +30,7 @@ def read_biax_tension_neo_hookean() -> dict:
 # - mooney-rivlin
 # - ogden
 
-def read_inputs(tension_folder: str, mat_model_folder: str) -> dict:
+def read_inputs(tension_folder: str, mat_model_folder: str) -> dict[str, pd.DataFrame]:
     inputs = {}
     data_folder = DATA_FOLDER + tension_folder + mat_model_folder
     for file in os.listdir(data_folder):
