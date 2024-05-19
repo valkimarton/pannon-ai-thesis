@@ -6,6 +6,8 @@ from dtaidistance import dtw
 from dtaidistance import dtw_visualisation as dtwvis
 from scipy.interpolate import interp1d
 import matplotlib.pyplot as plt
+from fastdtw import fastdtw
+from scipy.spatial.distance import euclidean
 
 RESAMPLED_DATA_FOLDER = './resampled_data/'
 
@@ -98,12 +100,12 @@ def save_resampled_data(resampled_nh: dict[str, pd.DataFrame],
         folder = stress_type_folder_full + MOONEY_RIVLIN_FOLDER
         if not os.path.exists(folder):
             os.makedirs(folder)
-        data.to_csv(folder + key + '.txt', sep=' ', index=False)
+        data.to_csv(folder + key + '.txt', sep=',', index=False)
     for key, data in resampled_og.items():
         folder = stress_type_folder_full + OGDEN_FOLDER
         if not os.path.exists(folder):
             os.makedirs(folder)
-        data.to_csv(folder + key + '.txt', sep=' ', index=False)
+        data.to_csv(folder + key + '.txt', sep=',', index=False)
 
 def create_resampled_inputs():
     inputs_biax_nh: dict[str, pd.DataFrame] = data_prep.read_inputs(data_prep.BIAX_TENSION_FOLDER, data_prep.NEO_HOOKEAN_FOLDER)
@@ -147,8 +149,34 @@ if __name__ == '__main__':
     # calculate similarity with dynamic time warping
 
     # calculate dynamic time warping similarity between two inputs
+    df1 = resampled_biax_nh['biax_tension_neohookean_dp0']
+    df2 = resampled_biax_nh['biax_tension_neohookean_dp1']
+    df3 = resampled_biax_mr['biax_tension_mooneyrivlin2_dp0']
+    df4 = resampled_biax_og['biax_tension_ogden_dp0']
+    df5 = resampled_biax_og['biax_tension_ogden_dp1']
+
+    # convert 'stress' column to numpy array
+    stress1 = df1['stress'].to_numpy()
+    stress2 = df2['stress'].to_numpy()
+    stress3 = df3['stress'].to_numpy()
+    stress4 = df4['stress'].to_numpy()
+    stress5 = df5['stress'].to_numpy()
 
 
+
+    # calculate dynamic time warping similarity between two inputs
+
+    distance, path = fastdtw(stress1, stress2)
+    print('Distance between df1 and df2: ' + str(distance))
+
+    distance, path = fastdtw(stress1, stress3)
+    print('Distance between df1 and df3: ' + str(distance))
+
+    distance, path = fastdtw(stress1, stress4)
+    print('Distance between df1 and df4: ' + str(distance))
+
+    distance, path = fastdtw(stress4, stress5)
+    print('Distance between df4 and df5: ' + str(distance))
 
 
 
@@ -159,24 +187,3 @@ if __name__ == '__main__':
     # -	Dinamikus idősorvetemítéssel
     # Interpolálni a görbéket úgy hogy azonos strain értékekkel dolgozzak: 
     # - Kitölteni a rövideket 0-kkal és ezután mehet a Dinamikus idősorvetemítés
-    
-
-    # inputs_planarc_nh: dict[str, pd.DataFrame] = data_prep.read_inputs(data_prep.PLANAR_COMPRESSION_FOLDER, data_prep.NEO_HOOKEAN_FOLDER)
-    # inputs_planarc_mr: dict[str, pd.DataFrame] = data_prep.read_inputs(data_prep.PLANAR_COMPRESSION_FOLDER, data_prep.MOONEY_RIVLIN_FOLDER)
-    # inputs_planarc_og: dict[str, pd.DataFrame] = data_prep.read_inputs(data_prep.PLANAR_COMPRESSION_FOLDER, data_prep.OGDEN_FOLDER)
-
-    # inputs_planart_nh: dict[str, pd.DataFrame] = data_prep.read_inputs(data_prep.PLANAR_TENSION_FOLDER, data_prep.NEO_HOOKEAN_FOLDER)
-    # inputs_planart_mr: dict[str, pd.DataFrame] = data_prep.read_inputs(data_prep.PLANAR_TENSION_FOLDER, data_prep.MOONEY_RIVLIN_FOLDER)
-    # inputs_planart_og: dict[str, pd.DataFrame] = data_prep.read_inputs(data_prep.PLANAR_TENSION_FOLDER, data_prep.OGDEN_FOLDER)
-
-    # inputs_shear_nh: dict[str, pd.DataFrame] = data_prep.read_inputs(data_prep.SIMPLE_SHEAR_FOLDER, data_prep.NEO_HOOKEAN_FOLDER)
-    # inputs_shear_mr: dict[str, pd.DataFrame] = data_prep.read_inputs(data_prep.SIMPLE_SHEAR_FOLDER, data_prep.MOONEY_RIVLIN_FOLDER)
-    # inputs_shear_og: dict[str, pd.DataFrame] = data_prep.read_inputs(data_prep.SIMPLE_SHEAR_FOLDER, data_prep.OGDEN_FOLDER)
-    
-    # inputs_uniaxc_nh: dict[str, pd.DataFrame] = data_prep.read_inputs(data_prep.UNIAX_COMPRESSION_FOLDER, data_prep.NEO_HOOKEAN_FOLDER)
-    # inputs_uniaxc_mr: dict[str, pd.DataFrame] = data_prep.read_inputs(data_prep.UNIAX_COMPRESSION_FOLDER, data_prep.MOONEY_RIVLIN_FOLDER)
-    # inputs_uniaxc_og: dict[str, pd.DataFrame] = data_prep.read_inputs(data_prep.UNIAX_COMPRESSION_FOLDER, data_prep.OGDEN_FOLDER)
-
-    # inputs_uniaxt_nh: dict[str, pd.DataFrame] = data_prep.read_inputs(data_prep.UNIAX_TENSION_FOLDER, data_prep.NEO_HOOKEAN_FOLDER)
-    # inputs_uniaxt_mr: dict[str, pd.DataFrame] = data_prep.read_inputs(data_prep.UNIAX_TENSION_FOLDER, data_prep.MOONEY_RIVLIN_FOLDER)
-    # inputs_uniaxt_og: dict[str, pd.DataFrame] = data_prep.read_inputs(data_prep.UNIAX_TENSION_FOLDER, data_prep.OGDEN_FOLDER)
