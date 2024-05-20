@@ -177,13 +177,3 @@ if __name__ == '__main__':
 
     distance, path = fastdtw(stress4, stress5)
     print('Distance between df4 and df5: ' + str(distance))
-
-
-
-
-    # TODO:
-    # KNN gráffal gráf a mintákból -> megnézni hogy kialakul-e a három klaszter
-    # Hasonlóság:
-    # -	Dinamikus idősorvetemítéssel
-    # Interpolálni a görbéket úgy hogy azonos strain értékekkel dolgozzak: 
-    # - Kitölteni a rövideket 0-kkal és ezután mehet a Dinamikus idősorvetemítés

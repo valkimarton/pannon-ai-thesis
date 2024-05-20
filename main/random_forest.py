@@ -351,10 +351,10 @@ def evaluate_combined_model(df_combined):
 
     # confusion matrix
     from sklearn.metrics import confusion_matrix
-    confusion_matrix = confusion_matrix(y_test, y_pred)
+    confusion_m = confusion_matrix(y_test, y_pred)
     # use heatmap to plot confusion matrix
     # if PLOT_ENABLED:
-    sns.heatmap(confusion_matrix, annot=True)
+    sns.heatmap(confusion_m, annot=True)
     plt.xlabel('Predicted')
     plt.ylabel('Actual')
     plt.title('Confusion Matrix for Combined Model')
