@@ -6,7 +6,7 @@ import seaborn as sns
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import cross_val_score, train_test_split
 
-PLOT_ENABLED = False
+PLOT_ENABLED = True
 
 BIAX_TENSION = 'Biax Tension'
 PLANAR_COMPRESSION = 'Planar Compression'
@@ -383,10 +383,7 @@ if __name__ == '__main__':
     df_combined = pd.merge(df_combined, df_uniax_tension_test_results, on=feature_extractor.SAMPLE_NAME, how='outer')
 
     summarize_votes(df_combined)
-
     evaluate_combined_model(df_combined)
-
-
     print('done')
 
 

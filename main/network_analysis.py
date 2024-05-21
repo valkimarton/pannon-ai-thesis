@@ -7,6 +7,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import confusion_matrix, accuracy_score
 import networkx as nx
 from networkx.algorithms import community
+import itertools
 
 from random_forest import read_inputs
 import feature_extractor
@@ -120,8 +121,8 @@ def create_KNN_graph_data_for_biax_tension(k: int = 5):
         feature_extractor.FINAL_STRESS
         ]]
     df_biax_tension_X_std = standardize(df_biax_tension_X)
-    KNN_graph = KNN_graph(df_biax_tension_X_std, 5)
-    save_graph(KNN_graph, 'biax_tension_graph.csv')
+    graph = KNN_graph(df_biax_tension_X_std, k)
+    save_graph(graph, 'biax_tension_graph_k' + str(k) + '.csv')
 
 def read_KNN_graph(file_path) -> nx.Graph:
     G = nx.Graph()
@@ -243,26 +244,35 @@ def evaluate_detected_classes(community_class_nodes: dict[int, list[int]], class
     accuracy = accuracy_score(y, y_pred)
     print(f'Accuracy: {accuracy}')
 
+def get_first_k_communities(G: nx.Graph, k: int):
+    results = []
+    comp = nx.community.girvan_newman(G)
+    for communities in itertools.islice(comp, k-1):
+        results.append(tuple(sorted(c) for c in communities))
+    return communities
+
 # TASK:
 # Read extracted features
 # define distance metric
 # KNN gráffal gráf a mintákból -> megnézni hogy kialakul-e a három klaszter
 if __name__ == '__main__':
-    #create_KNN_graph_data_for_biax_tension(5)
+    K = 10
+    #create_KNN_graph_data_for_biax_tension(K)
 
-    KNN_graph_biax_tension: nx.Graph = read_KNN_graph(NETWORK_ANALYSIS_DATA_PATH + 'biax_tension_graph.csv')
+    KNN_graph_biax_tension: nx.Graph = read_KNN_graph(NETWORK_ANALYSIS_DATA_PATH + 'biax_tension_graph_k' + str(K) + '.csv')
+    
     plot_graph(KNN_graph_biax_tension)
 
-    # community detection
-    communities = community.louvain_communities(KNN_graph_biax_tension, seed=3)
-    plot_graph_by_communities(KNN_graph_biax_tension, communities)
-
+    # get first three Girvan-Newman communities
+    girvan_newman_communities = get_first_k_communities(KNN_graph_biax_tension, 3)
+    plot_graph_by_communities(KNN_graph_biax_tension, girvan_newman_communities)
+    
     classes = get_classes()
     plot_graph_by_classes(KNN_graph_biax_tension, classes)
 
     # assign each community to a class: assign community to the class from wich it has the most nodes
-    community_classes: dict[int, list[int]] = get_community_classes(communities, classes)
-    community_class_nodes: dict[int, list[int]] = get_community_class_nodes(community_classes, communities)
+    community_classes: dict[int, list[int]] = get_community_classes(girvan_newman_communities, classes)
+    community_class_nodes: dict[int, list[int]] = get_community_class_nodes(community_classes, girvan_newman_communities)
     plot_graph_by_community_classes(KNN_graph_biax_tension, community_class_nodes)
 
     evaluate_detected_classes(community_class_nodes, classes)
