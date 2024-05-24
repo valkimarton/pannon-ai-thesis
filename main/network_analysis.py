@@ -276,6 +276,10 @@ if __name__ == '__main__':
     plot_graph_by_community_classes(KNN_graph_biax_tension, community_class_nodes)
 
     evaluate_detected_classes(community_class_nodes, classes)
+
+    # calculate modularity
+    modularity = community.modularity(KNN_graph_biax_tension, girvan_newman_communities)
+    print(f'Modularity: {modularity}')
     
     print('done')
 
